@@ -261,15 +261,24 @@ function updateCarbonUI(){
 }
 
 /*** ==== SHEETS POST ==== ***/
+// Replace the postToSheets function in your HTML with this:
 async function postToSheets(payload){
   const res = await fetch(SHEETS_ENDPOINT, {
     method:"POST",
-    headers:{"Content-Type":"application/json"},
+    headers:{
+      "Content-Type":"application/json",
+    },
     body:JSON.stringify(payload),
-    keepalive:true
+    keepalive:true,
+    mode: 'cors' // Explicitly set CORS mode
   });
-  if(!res.ok){throw new Error("Sheets endpoint error: "+res.status)}
-  return await res.json();
+  if(!res.ok){
+    console.error("Response not OK:", res.status, res.statusText);
+    throw new Error("Sheets endpoint error: "+res.status);
+  }
+  const responseText = await res.text();
+  console.log("Raw response:", responseText);
+  return JSON.parse(responseText);
 }
 
 /*** ==== GENERATE VIA APPS SCRIPT PROXY ==== ***/
