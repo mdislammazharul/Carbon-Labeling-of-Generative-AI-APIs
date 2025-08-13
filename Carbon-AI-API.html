@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carbon-Labeling of Generative-AI APIs – Study</title>
+<meta name="description" content="Experimental study on carbon labels for AI APIs." />
+<style>
+  :root{
+    --green:#2e7d32;
+    --green-600:#1b5e20;
+    --green-100:#e8f5e9;
+    --accent:#66bb6a;
+    --danger:#c62828;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --bg:#f6fbf7;
+  }
+  *{box-sizing:border-box;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+  body{margin:0;background:var(--bg);color:var(--text)}
+  .wrap{max-width:880px;margin:0 auto;padding:24px}
+  .card{background:#fff;border-radius:16px;box-shadow:0 6px 24px rgba(0,0,0,.06);padding:24px}
+  h1,h2{margin:0 0 10px}
+  h1{font-size:24px}
+  h2{font-size:20px;color:var(--green-600)}
+  p{line-height:1.5}
+  .btn{appearance:none;border:0;border-radius:12px;padding:12px 18px;font-weight:600;cursor:pointer;background:var(--green);color:#fff}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.secondary{background:#fff;color:var(--green);border:2px solid var(--green)}
+  .btn.danger{background:var(--danger)}
+  .row{display:flex;gap:16px;flex-wrap:wrap}
+  .col{flex:1 1 260px}
+  label{font-weight:600;display:block;margin:12px 0 6px}
+  input[type="text"],select,textarea{
+    width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;background:#fff
+  }
+  textarea{min-height:120px;resize:vertical}
+  .hidden{display:none}
+  .meter{height:14px;background:var(--green-100);border-radius:999px;overflow:hidden}
+  .meter > div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--green));transition:width .3s}
+  .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:var(--green-100);color:var(--green-600);font-size:12px;font-weight:700}
+  .muted{color:var(--muted);font-size:13px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 16px}
+  .stat{background:#fff;border:1px solid #e5e7eb;padding:10px 12px;border-radius:12px;display:flex;gap:8px;align-items:center}
+  .green-emoji{font-size:22px}
+  .warn{color:var(--danger);font-weight:700}
+  .footer{margin-top:20px;font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div id="page-consent">
+      <h1>🌿 Carbon-Labeling of Generative-AI APIs — Consent</h1>
+      <p>
+        You’re invited to a 10-minute study about how carbon labels may affect API usage choices.
+        We log your interaction counts and demographics (non-identifying). No IPs or names are collected.
+        Data will be stored in a secured Google Sheet and deleted after the project finishes.
+      </p>
+      <ul>
+        <li>Voluntary and anonymous (random participant ID)</li>
+        <li>Can exit anytime — we’ll still save progress</li>
+        <li>Estimated duration: ~10 minutes</li>
+      </ul>
+      <label><input type="checkbox" id="consentCheck"> I have read this information and consent to participate.</label>
+      <div class="row">
+        <button class="btn" id="btnConsentNext" disabled>Agree & Continue</button>
+      </div>
+      <div class="footer">Contact: research team • Purpose: academic research • Ethics: minimal risk</div>
+    </div>
+
+    <div id="page-demo" class="hidden">
+      <h1>📋 Demographics</h1>
+      <p class="muted">These items are required to continue. We do not collect any personally identifiable information.</p>
+      <div class="row">
+        <div class="col">
+          <label>Age</label>
+          <select id="age" required>
+            <option value="">Select…</option>
+            <option>18-24</option><option>25-34</option><option>35-44</option>
+            <option>45-54</option><option>55-64</option><option>65+</option>
+            <option>Prefer not to say</option>
+            </select>
+        </div>
+        <div class="col">
+          <label>Gender</label>
+          <select id="gender" required>
+            <option value="">Select…</option>
+            <option>Female</option><option>Male</option><option>Non-binary</option>
+            <option>Prefer to self-describe</option><option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Country</label>
+          <select id="country" required></select>
+        </div>
+        <div class="col">
+          <label>Education</label>
+          <select id="education" required>
+            <option value="">Select…</option>
+            <option>High school or less</option><option>Some college</option>
+            <option>Bachelor’s</option><option>Master’s</option><option>Doctorate</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Employment</label>
+          <select id="employment" required>
+            <option value="">Select…</option>
+            <option>Student</option><option>Employed full-time</option><option>Employed part-time</option>
+            <option>Self-employed</option><option>Unemployed</option><option>Other</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Tech experience</label>
+          <select id="techExp" required>
+            <option value="">Select…</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>AI use frequency</label>
+          <select id="aiUse" required>
+            <option value="">Select…</option>
+            <option>Never</option><option>Monthly</option><option>Weekly</option><option>Daily</option><option>Several times/day</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Environmental concern</label>
+          <select id="envConcern" required>
+            <option value="">Select…</option>
+            <option>Not concerned</option><option>Slightly concerned</option><option>Moderately concerned</option>
+            <option>Very concerned</option><option>Extremely concerned</option>
+          </select>
+        </div>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="btnDemoNext" disabled>Continue to Task</button>
+      </div>
+    </div>
+
+    <div id="page-task" class="hidden">
+      <div class="topbar">
+        <div class="stat"><span class="green-emoji">🌱</span><div>
+          <div><strong>Task:</strong> Creative ideation with an AI assistant</div>
+          <div class="muted">Spend ~10 minutes generating ideas from your prompts.</div>
+        </div></div>
+        <div class="stat"><strong>⏳ Time left:</strong>&nbsp;<span id="timer">10:00</span></div>
+        <div class="stat"><strong>🔄 API calls:</strong>&nbsp;<span id="apiCount">0</span></div>
+        <div id="labelTag" class="stat hidden"><span class="tag" id="labelMode">Label</span></div>
+      </div>
+
+      <div id="carbonPanel" class="hidden">
+        <h2>Carbon meter</h2>
+        <div class="muted" id="carbonHint">Estimated emissions for this session.</div>
+        <div class="meter" style="margin:8px 0 6px"><div id="meterFill"></div></div>
+        <div><strong id="carbonTotal">0 g CO₂</strong> <span class="muted" id="carbonEq"></span></div>
+      </div>
+
+      <label for="prompt">Your prompt</label>
+      <textarea id="prompt" placeholder="e.g., Generate 5 eco-friendly business ideas about..."></textarea>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="btnGenerate">Generate</button>
+        <button class="btn secondary" id="btnExit">Exit & Submit</button>
+      </div>
+
+      <label style="margin-top:18px">AI output</label>
+      <textarea id="output" readonly placeholder="Model responses will appear here…"></textarea>
+
+      <p class="footer">Designed to be minimalist and energy-light 🌿</p>
+    </div>
+  </div>
+</div>
+
+<script>
+/*** ==== CONFIG ==== ***/
+const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbw9FC3f4pEWGEm5QdcrGodQRKmQNqMgZokp-FuTx76x6KERwSOKiOqbioD3GhhZovro/exec";
+
+// Carbon labeling conditions: "grams", "carKm", "none"
+const CONDITIONS = ["grams","carKm","none"];
+
+// Simple per-call emission assumption (demo value):
+// You can tune this constant to your chosen estimate.
+const CO2_PER_CALL_GRAMS = 5; // 5 g per API call (for labeling display only)
+const CAR_G_PER_KM = 120; // EU average ~120 g/km
+
+// Timer length (seconds)
+const TASK_SECONDS = 10*60;
+
+/*** ==== STATE ==== ***/
+let participant = {
+  id: crypto.randomUUID(),
+  condition: CONDITIONS[Math.floor(Math.random()*CONDITIONS.length)],
+  consent: false,
+  demographics: {},
+  startedAt: null,
+  endedAt: null,
+  apiCalls: [], // {t, promptLen, outputLen}
+  apiCount: 0,
+  carbonGrams: 0
+};
+
+let tRemaining = TASK_SECONDS;
+let timerHandle = null;
+
+/*** ==== UTIL ==== ***/
+function $(id){return document.getElementById(id)}
+function show(id){$(id).classList.remove("hidden")}
+function hide(id){$(id).classList.add("hidden")}
+function fmtTime(s){const m=Math.floor(s/60), ss=String(s%60).padStart(2,"0"); return `${m}:${ss}`;}
+function requireAllFilled(selectors){
+  return selectors.every(sel=>{
+    const el = $(sel);
+    return el && el.value && el.value.trim() !== "";
+  });
+}
+function updateButtons(){
+  $("btnConsentNext").disabled = !$("consentCheck").checked;
+  $("btnDemoNext").disabled = !requireAllFilled(["age","gender","country","education","employment","techExp","aiUse","envConcern"]);
+}
+function populateCountries(){
+  const list = ["","Afghanistan","Argentina","Australia","Austria","Bangladesh","Belgium","Brazil","Bulgaria","Canada","Chile","China","Colombia","Croatia","Czechia","Denmark","Egypt","Estonia","Finland","France","Germany","Greece","Hong Kong","Hungary","India","Indonesia","Ireland","Israel","Italy","Japan","Kenya","Latvia","Lithuania","Malaysia","Mexico","Netherlands","New Zealand","Nigeria","Norway","Pakistan","Peru","Philippines","Poland","Portugal","Romania","Russia","Saudi Arabia","Serbia","Singapore","Slovakia","Slovenia","South Africa","South Korea","Spain","Sweden","Switzerland","Taiwan","Thailand","Turkey","Ukraine","United Arab Emirates","United Kingdom","United States","Vietnam","Other","Prefer not to say"];
+  const c = $("country");
+  c.innerHTML = list.map(x=>`<option>${x}</option>`).join("");
+  c.firstElementChild.value = "";
+}
+
+/*** ==== NAV ==== ***/
+function goto(page){
+  ["page-consent","page-demo","page-task"].forEach(id=>hide(id));
+  show(page);
+}
+function startTimer(){
+  $("timer").textContent = fmtTime(tRemaining);
+  timerHandle = setInterval(()=>{
+    tRemaining--;
+    $("timer").textContent = fmtTime(Math.max(0,tRemaining));
+    if(tRemaining<=0){
+      clearInterval(timerHandle);
+      alert("Time is up—please submit your session. Thank you!");
+    }
+  },1000);
+}
+
+/*** ==== CARBON UI ==== ***/
+function updateCarbonUI(){
+  const grams = participant.carbonGrams;
+  const mode = participant.condition;
+  const pct = Math.min(100, (grams/ (CO2_PER_CALL_GRAMS*20))*100); // arbitrary meter scale = ~20 calls
+  $("meterFill").style.width = pct+"%";
+  if(mode==="grams"){
+    $("carbonTotal").textContent = `${grams.toFixed(1)} g CO₂`;
+    $("carbonEq").textContent = "";
+    $("labelMode").textContent = "📏 grams CO₂";
+  }else if(mode==="carKm"){
+    const km = grams / CAR_G_PER_KM;
+    $("carbonTotal").textContent = `${km.toFixed(3)} km (car)`;
+    $("carbonEq").textContent = `≈ ${(grams).toFixed(1)} g CO₂`;
+    $("labelMode").textContent = "🚗 car kilometres";
+  }
+}
+
+/*** ==== SHEETS POST ==== ***/
+async function postToSheets(payload){
+  const res = await fetch(SHEETS_ENDPOINT, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(payload),
+    keepalive:true
+  });
+  if(!res.ok){throw new Error("Sheets endpoint error: "+res.status)}
+  return await res.json();
+}
+
+/*** ==== GENERATE VIA APPS SCRIPT PROXY ==== ***/
+async function generateText(prompt){
+  // Calls Apps Script with action=generate. The script can proxy to Hugging Face (recommended),
+  // or return a simple local stub if you don’t set a token there.
+  const res = await postToSheets({action:"generate", prompt, participantId: participant.id});
+  return res.output || "(no output)";
+}
+
+/*** ==== SUBMIT ==== ***/
+async function submitAll(earlyExit){
+  participant.endedAt = new Date().toISOString();
+  const payload = {
+    action:"submit",
+    participantId: participant.id,
+    condition: participant.condition,
+    consent: participant.consent,
+    startedAt: participant.startedAt,
+    endedAt: participant.endedAt,
+    timeSpentSec: TASK_SECONDS - Math.max(0,tRemaining),
+    demographics: participant.demographics,
+    apiCount: participant.apiCount,
+    carbonGrams: participant.carbonGrams,
+    apiCalls: participant.apiCalls
+  };
+  try{
+    await postToSheets(payload);
+    alert(earlyExit ? "Submitted. You exited before 10 minutes—thank you!" : "Submitted. Thanks for participating! 🌿");
+  }catch(e){
+    console.error(e);
+    alert("We couldn’t submit to the study server right now. Please check your network and try the Exit & Submit button again.");
+    throw e; // ensure we don’t proceed to the thank-you screen on failure
+  }
+}
+
+/*** ==== EVENTS ==== ***/
+window.addEventListener("DOMContentLoaded",()=>{
+  populateCountries();
+  updateButtons();
+
+  $("consentCheck").addEventListener("change",updateButtons);
+  $("btnConsentNext").addEventListener("click",()=>{
+    if(!$("consentCheck").checked){alert("Please consent to continue.");return;}
+    participant.consent = true;
+    goto("page-demo");
+  });
+
+  document.querySelectorAll("#page-demo select").forEach(el=>el.addEventListener("change",updateButtons));
+  $("btnDemoNext").addEventListener("click",()=>{
+    if(!requireAllFilled(["age","gender","country","education","employment","techExp","aiUse","envConcern"])){
+      alert("Please complete all fields to continue.");
+      return;
+    }
+    participant.demographics = {
+      age:$("age").value, gender:$("gender").value, country:$("country").value,
+      education:$("education").value, employment:$("employment").value,
+      techExp:$("techExp").value, aiUse:$("aiUse").value, envConcern:$("envConcern").value
+    };
+
+    // Task setup
+    goto("page-task");
+    participant.startedAt = new Date().toISOString();
+
+    // Label condition UI
+    if(participant.condition!=="none"){
+      show("carbonPanel");
+      show("labelTag");
+      updateCarbonUI();
+      $("carbonHint").textContent = participant.condition==="grams"
+        ? "Per-call grams of CO₂ accumulated this session (illustrative estimate)."
+        : "Equivalent car travel distance this session (illustrative estimate).";
+    }else{
+      hide("carbonPanel");
+      hide("labelTag");
+    }
+    startTimer();
+  });
+
+  $("btnGenerate").addEventListener("click", async ()=>{
+    const prompt = $("prompt").value.trim();
+    if(!prompt){alert("Enter a prompt first."); return;}
+    $("btnGenerate").disabled = true;
+    try{
+      const out = await generateText(prompt);
+      $("output").value = out;
+
+      // Log call
+      participant.apiCount += 1;
+      $("apiCount").textContent = participant.apiCount;
+      participant.apiCalls.push({t: new Date().toISOString(), promptLen: prompt.length, outputLen: out.length});
+      // Carbon accumulation (label only affects display, but we always accumulate for analysis)
+      participant.carbonGrams += CO2_PER_CALL_GRAMS;
+      if(participant.condition!=="none"){ updateCarbonUI(); }
+    }catch(e){
+      console.error(e);
+      alert("Generation failed. Please try again.");
+    }finally{
+      $("btnGenerate").disabled = false;
+    }
+  });
+
+  $("btnExit").addEventListener("click", async ()=>{
+    const early = tRemaining>0;
+    if(early){
+      if(!confirm("You are exiting before 10 minutes. Your data will be submitted. Continue?")) return;
+    }else{
+      alert("Thank you! Submitting your data now.");
+    }
+    await submitAll(early);
+    // Minimal end screen
+    document.body.innerHTML = `
+      <div class="wrap"><div class="card">
+        <h1>🌿 Thank you for participating</h1>
+        <p>Your responses were submitted. All data will be deleted after the study concludes.</p>
+      </div></div>`;
+  });
+});
+</script>
+</body>
+</html>
