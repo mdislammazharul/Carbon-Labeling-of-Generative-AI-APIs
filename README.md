@@ -109,7 +109,7 @@ Feel free to fork this project and contribute improvements or feature enhancemen
 
 ### Issues
 
-- If you encounter any bugs or have suggestions for new features, please create an issue [here](https://github.com/yourusername/carbon-labeling-llms/issues).
+- If you encounter any bugs or have suggestions for new features, please create an issue [here](https://github.com/mdislammazharul/Carbon-Labeling-of-Generative-AI-APIs/issues).
 
 ---
 
