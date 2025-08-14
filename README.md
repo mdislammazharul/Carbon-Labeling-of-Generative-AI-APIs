@@ -46,7 +46,7 @@ No special prerequisites are needed to run this project locally. You only need a
 git clone https://github.com/mdislammazharul/Carbon-Labeling-of-Generative-AI-APIs.git
 ```
 
-### 4. Open the webpage
+### 2. Open the webpage
 
 Just click the `html` file to open it in a browser and go to. You should be able to interact with the mock API playground and participate in the study.
 
