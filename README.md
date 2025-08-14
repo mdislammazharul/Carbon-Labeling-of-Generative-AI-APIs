@@ -1,7 +1,3 @@
-Here's a `README.md` file for your GitHub repository:
-
----
-
 # Carbon-Labeling of Generative-AI APIs: User Behavior Study
 
 ## Overview
